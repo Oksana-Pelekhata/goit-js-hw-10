@@ -13,9 +13,9 @@ const divEl = document.querySelector('.country-info')
 searchInputEl.addEventListener('input', debounce(handleSearchFormInput, DEBOUNCE_DELAY))
 
 function handleSearchFormInput(event) {
-    event.preventDefault();
+    // event.preventDefault();
 
-    const name = searchInputEl.value.trim()
+    const name = event.target.value.trim()
 
     resetInput()
 
@@ -25,7 +25,6 @@ function handleSearchFormInput(event) {
     
     fetchCountries(name).then(
         data => {
-            // console.log(data);
             if (data.length === 1) {
                createMarkUpOfExtendedInfo(data)
             }
@@ -40,9 +39,12 @@ function handleSearchFormInput(event) {
 
         }
     )
-    .catch(
-      Notiflix.Notify.failure('Oops, there is no country with that name')
-    )
+        .catch(
+        err => {
+                console.log(err);
+                Notiflix.Notify.failure('Oops, there is no country with that name')
+    });
+      
 }
 
 function createMarkUpOfExtendedInfo(data) {
@@ -62,11 +64,12 @@ return `
 function createMarkUpOfSeveralCountries(data) {
    const markUp = data.map((country) => {
 return `
-  <li style="display:flex; align-items:center; gap:10px">
+  <li style="display:flex; align-items:center; gap:10px;">
     <img src='${country.flags.svg}' alt='${country.flags.alt}' width = 35px>
     <p>${country.name.official}</p>
 </li>`
-    })
+   })
+    .join('');
 
   countyListEl.insertAdjacentHTML('beforeend', markUp); 
 }
